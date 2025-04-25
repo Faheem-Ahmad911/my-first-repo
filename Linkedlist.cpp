@@ -60,7 +60,7 @@ public:
             current = next;
         }
         head = prev;
-        return head; // Fix: Return new head
+        return head;
     }
 
     void Modify(int pos, int val)
@@ -92,7 +92,7 @@ public:
         }
 
         int var = count / 2;
-        temp = head; // Fix: Reset temp before traversing
+        temp = head;
 
         while (var--)
         {
@@ -128,14 +128,8 @@ public:
     {
         if (!head)
             return;
-        if (!head->next)
-        {
-            delete head;
-            head = nullptr;
-            return;
-        }
         Node *temp = head;
-        head = temp->next;
+        head = head->next;
         delete temp;
     }
 
@@ -146,12 +140,12 @@ public:
         {
             if (temp->data == val)
             {
-                cout << "Node is Present in it " << endl;
+                cout << "Node is Present in it" << endl;
                 return;
             }
             temp = temp->next;
         }
-        cout << "Node not Found " << endl;
+        cout << "Node not Found" << endl;
     }
 
     void Delete_at_pos(int pos)
@@ -186,11 +180,13 @@ public:
     void insert_at_Index(int pos, int val)
     {
         Node *newnode = new Node(val);
-        if (!head)
+        if (!head || pos == 0)
         {
+            newnode->next = head;
             head = newnode;
             return;
         }
+
         Node *temp = head;
         int index = 0;
         while (temp->next != nullptr && index < pos - 1)
@@ -210,7 +206,7 @@ public:
             sum1 += temp->data;
         }
         for (Node *temp = l2->head; temp != nullptr; temp = temp->next)
-        { // Fix: Use l2->head
+        {
             sum2 += temp->data;
         }
         if (sum1 == sum2)
@@ -229,7 +225,7 @@ public:
         while (temp)
         {
             cout << temp->data << endl;
-            if (!temp->next) // Fix: Prevent accessing nullptr
+            if (!temp->next)
                 break;
             temp = temp->next->next;
         }
@@ -256,11 +252,10 @@ public:
         if (!found)
             cout << "No even numbers found." << endl;
     }
+
     void Second_to_second_last()
     {
-        if (!head)
-            return;
-        if (!head->next)
+        if (!head || !head->next)
             return;
         Node *temp = head;
 
@@ -270,16 +265,19 @@ public:
             temp = temp->next;
         }
     }
+
     void add_if_500(int val)
     {
         if (!head)
             return;
-        Node *newnode = new int(val);
+        Node *newnode = new Node(val);
         Node *temp = head;
         int count = 0;
-        while (temp->next != nullptr)
+        while (temp != nullptr)
         {
             count += temp->data;
+            if (temp->next == nullptr)
+                break;
             temp = temp->next;
         }
         if (count > 500)
@@ -287,20 +285,23 @@ public:
             temp->next = newnode;
         }
     }
+
     void Add_even(int val)
     {
         if (!head)
             return;
-        Node *newnode = new Node(val);
+
         if (val % 2 == 0)
         {
             Node *temp = head;
-
-            while (temp->next != nullptr)
+            while (temp != nullptr)
             {
-                if (temp->data % 2 != 0)
+                if (temp->data % 2 == 0)
                 {
-                    newnode->next = temp;
+                    Node *newnode = new Node(val);
+                    newnode->next = temp->next;
+                    temp->next = newnode;
+                    temp = newnode->next;
                 }
                 else
                 {
@@ -309,13 +310,17 @@ public:
             }
         }
     }
-    void Remove_if_greater(LinkedList l1)
+
+    void Remove_if_greater()
     {
         if (!head)
             return;
-        head = Reverse_list(l1);
+
+        Reverse_list();
+
         Node *temp = head;
         Node *max_node = head;
+
         while (temp && temp->next)
         {
             if (temp->next->data < max_node->data)
@@ -330,6 +335,8 @@ public:
                 temp = temp->next;
             }
         }
+
+        Reverse_list();
     }
 };
 
@@ -343,26 +350,12 @@ int main()
     l1.append(211);
     l1.append(2);
 
-    // l1.Display();
-    // l1.Modify(1, 1);
-    // l1.Display();
-    // l1.Search_key(222);
-    // l1.insert_at_Index(2, 4);
-    // l1.Display();
-    // l1.Reverse_list();
-    // l1.Display();
-    // l1.Modify(2, 1);
-    // l1.Display();
-    // l1.Search_key(2);
-    // l1.Alternative_nodes();
+    cout << "Original list: ";
+    l1.Display();
 
-    // cout << "Even Nodes:" << endl;
-    // l1.Even_Nodes();
+    l1.Remove_if_greater();
 
-    // // cout << "Middle Node: " << l1.Middle_list() << endl;
-    // cout << "Second_to_Second_last" << endl;
-    // l1.Second_to_second_last();
-    l1.Remove_if_greater(l1);
+    cout << "After Remove_if_greater: ";
     l1.Display();
 
     return 0;
